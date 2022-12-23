@@ -5,13 +5,15 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
+// use kartik\grid\Gridview;
 use \yii\widgets\LinkPager;
+use kartik\export\ExportMenu;
 
 /** @var yii\web\View $this */
 /** @var app\models\AdminSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Users';
+$this->title = 'Admin Section';
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
@@ -24,27 +26,22 @@ $this->params['breadcrumbs'][] = $this->title;
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        // 'pagination' => $pages,
-        'columns' => [
+    <?php  $gridColumns = [
             ['class' => 'yii\grid\SerialColumn'],
 
             'id',
             [
                 'attribute' => 'name',
                 'filterInputOptions' => [
-                    'class'       => 'form-control',
-                    'placeholder' => 'Search your Names...'
-                 ]
+                'class'       => 'form-control',
+                'placeholder' => 'Search for Names  ...'
+                ]
             ],
             [
                 'attribute' => 'email',
                 'filterInputOptions' => [
-                    'class'       => 'form-control',
-                    'placeholder' => 'Search for Email...'
+                'class'       => 'form-control',
+                'placeholder' => 'Search for Email...'
                  ]
             ],
             // 'password',
@@ -54,6 +51,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filterInputOptions' => [
                     'class'       => 'form-control',
                     'placeholder' => 'Search for Gender...'
+                 ]
+            ],
+            [
+                'attribute' => 'department',
+                'filterInputOptions' => [
+                    'class'       => 'form-control',
+                    'placeholder' => 'Search for department     ...'
                  ]
             ],
             //'is_deleted',
@@ -96,11 +100,27 @@ $this->params['breadcrumbs'][] = $this->title;
                         ]);
                     }
                 ]
-            ],           
-        ]
-    ]); 
+            ]         
+        ];
+
+
+  
+     // Renders a export dropdown menu
+echo ExportMenu::widget([
+    'dataProvider' => $dataProvider,
+    'columns' => $gridColumns,
+    'clearBuffers' => true, //optional
+]);
+
+// You can choose to render your own GridView separately
+echo GridView::widget([
+    'dataProvider' => $dataProvider,
+    'filterModel' => $searchModel,
+    'columns' => $gridColumns
+]);?> 
     
-    echo LinkPager::widget([
+    
+    <?php echo LinkPager::widget([
              'pagination' => $pages, ]);?>
 
 

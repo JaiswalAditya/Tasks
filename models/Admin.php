@@ -12,6 +12,7 @@ use Yii;
  * @property string $email
  * @property string $password
  * @property string $gender
+ * @property string $department
  * @property int $is_active
  * @property int $is_deleted
  */
@@ -31,7 +32,7 @@ class Admin extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'email', 'password', 'gender'], 'required'],
+            [['name', 'email', 'password', 'gender','department'], 'required'],
             [['gender'], 'string'],
             [['email'], 'unique'],
             [['is_active', 'is_deleted'], 'integer'],
@@ -51,6 +52,7 @@ class Admin extends \yii\db\ActiveRecord
             'email' => 'Email',
             'password' => 'Password',
             'gender' => 'Gender',
+            'department' => 'department',
             'is_active' => 'Is Active',
             'is_deleted' => 'Is Deleted',
         ];

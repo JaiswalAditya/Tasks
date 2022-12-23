@@ -22,6 +22,9 @@ use yii\widgets\ActiveForm;
        ['...','Male' => 'Male', 'Female' => 'Female', 'Others' => 'Others']
     ); 
     ?>
+    <?= $form->field($model, 'department')->radioList([ 'php' => 'PHP', 'Angular' => 'Angular', 'Android' => 'Android','Nodejs' => 'Nodejs']) ?>
+
+    <br/>
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>

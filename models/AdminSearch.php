@@ -18,7 +18,7 @@ class AdminSearch extends Admin
     {
         return [
             [['id', 'is_active', 'is_deleted'], 'integer'],
-            [['name', 'email', 'password','gender'], 'safe'],
+            [['name', 'email', 'password','gender','department'], 'safe'],
         ];
     }
 
@@ -60,11 +60,14 @@ class AdminSearch extends Admin
         $query->andFilterWhere([
             'id' => $this->id,
             'gender' => $this->gender,
+            'email' => $this->email,
+
             'is_active' => $this->is_active,
             'is_deleted' => $this->is_deleted,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
+            ->andFilterWhere(['like', 'department', $this->department])
             ->andFilterWhere(['like', 'email', $this->email])
             ->andFilterWhere(['like', 'password', $this->password]);
 
