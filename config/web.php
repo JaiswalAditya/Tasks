@@ -1,8 +1,8 @@
 <?php
-
+use yii\web\Request;
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
-
+$baseUrl = str_replace('/web', '', (new Request)->getBaseUrl());
 $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
@@ -22,7 +22,10 @@ $config = [
         ],
         'user' => [
             'identityClass' => 'app\models\User',
-            'enableAutoLogin' => true,
+            'enableAutoLogin' => false,
+            'enableSession' => true,
+            'authTimeout' => 3600, //100 minutes
+            'loginUrl' => $baseUrl . '/site/login',
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
@@ -52,6 +55,12 @@ $config = [
         ],
     ],
     'params' => $params,
+    'modules' => [
+        'api' => [
+            'class' => 'app\modules\api\Module',
+        ],
+        'gridview' => ['class' => 'kartik\grid\Module']
+    ],
 ];
 
 if (YII_ENV_DEV) {

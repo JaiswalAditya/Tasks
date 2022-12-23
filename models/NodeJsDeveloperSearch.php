@@ -4,12 +4,12 @@ namespace app\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Admin;
+use app\models\NodeJsDeveloper;
 
 /**
- * AdminSearch represents the model behind the search form of `app\models\Admin`.
+ * NodeJsDeveloperSearch represents the model behind the search form of `app\models\NodeJsDeveloper`.
  */
-class AdminSearch extends Admin
+class NodeJsDeveloperSearch extends NodeJsDeveloper
 {
     /**
      * {@inheritdoc}
@@ -17,8 +17,8 @@ class AdminSearch extends Admin
     public function rules()
     {
         return [
-            [['id', 'is_active', 'is_deleted'], 'integer'],
-            [['name', 'email', 'password','gender'], 'safe'],
+            [['emp_id', 'no_of_experience'], 'integer'],
+            [['emp_name', 'emp_age', 'language_used', 'framework_used'], 'safe'],
         ];
     }
 
@@ -40,7 +40,7 @@ class AdminSearch extends Admin
      */
     public function search($params)
     {
-        $query = Admin::find();
+        $query = NodeJsDeveloper::find();
 
         // add conditions that should always apply here
 
@@ -58,18 +58,14 @@ class AdminSearch extends Admin
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'gender' => $this->gender,
-            'email' => $this->email,
-
-            'is_active' => $this->is_active,
-            'is_deleted' => $this->is_deleted,
+            'emp_id' => $this->emp_id,
+            'no_of_experience' => $this->no_of_experience,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name])
-            // ->andFilterWhere(['like', 'department', $this->department])
-            ->andFilterWhere(['like', 'email', $this->email])
-            ->andFilterWhere(['like', 'password', $this->password]);
+        $query->andFilterWhere(['like', 'emp_name', $this->emp_name])
+            ->andFilterWhere(['like', 'emp_age', $this->emp_age])
+            ->andFilterWhere(['like', 'language_used', $this->language_used])
+            ->andFilterWhere(['like', 'framework_used', $this->framework_used]);
 
         return $dataProvider;
     }

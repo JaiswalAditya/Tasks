@@ -53,13 +53,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     'placeholder' => 'Search for Gender...'
                  ]
             ],
-            [
-                'attribute' => 'department',
-                'filterInputOptions' => [
-                    'class'       => 'form-control',
-                    'placeholder' => 'Search for department     ...'
-                 ]
-            ],
+            // [
+            //     'attribute' => 'department',
+            //     'filterInputOptions' => [
+            //         'class'       => 'form-control',
+            //         'placeholder' => 'Search for department     ...'
+            //      ]
+            // ],
             //'is_deleted',
             // ['header' => 'Action',
             //     'class' => ActionColumn::className(),

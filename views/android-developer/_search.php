@@ -4,24 +4,28 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
-/** @var app\models\SimpleTableSearch $model */
+/** @var app\models\AndroidDeveloperSearch $model */
 /** @var yii\widgets\ActiveForm $form */
 ?>
 
-<div class="simple-table-search">
+<div class="android-developer-search">
 
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
         'method' => 'get',
     ]); ?>
 
-    <?= $form->field($model, 'id') ?>
+    <?= $form->field($model, 'emp_id') ?>
 
-    <?= $form->field($model, 'name') ?>
+    <?= $form->field($model, 'emp_name') ?>
 
-    <?= $form->field($model, 'age') ?>
+    <?= $form->field($model, 'emp_age') ?>
 
-    <?= $form->field($model, 'phone') ?>
+    <?= $form->field($model, 'no_of_experience') ?>
+
+    <?= $form->field($model, 'language_used') ?>
+
+    <?php // echo $form->field($model, 'framework_used') ?>
 
     <div class="form-group">
         <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>

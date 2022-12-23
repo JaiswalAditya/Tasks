@@ -1,7 +1,7 @@
 <?php
 
 namespace app\models;
-
+use yii\db\Expression;
 use Yii;
 
 /**
@@ -21,6 +21,7 @@ class Admin extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
+    public $name = 'aditya';
     public static function tableName()
     {
         return 'admin';
@@ -32,7 +33,7 @@ class Admin extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'email', 'password', 'gender','department'], 'required'],
+            [['name', 'email', 'password', 'gender'], 'required'],
             [['gender'], 'string'],
             [['email'], 'unique'],
             [['is_active', 'is_deleted'], 'integer'],
@@ -52,7 +53,7 @@ class Admin extends \yii\db\ActiveRecord
             'email' => 'Email',
             'password' => 'Password',
             'gender' => 'Gender',
-            'department' => 'department',
+            // 'department' => 'department',
             'is_active' => 'Is Active',
             'is_deleted' => 'Is Deleted',
         ];

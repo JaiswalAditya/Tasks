@@ -60,7 +60,7 @@ class SiteController extends Controller
     }
 
 
-    
+
     /**
      * Displays homepage.
      *
@@ -68,6 +68,7 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+        
         if (Yii::$app->user->isGuest) {
             return $this->redirect(['site/login']);
         } else {
@@ -83,6 +84,7 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
+        // $this->layout = false;
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }

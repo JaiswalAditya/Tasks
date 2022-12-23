@@ -74,11 +74,33 @@ class LoginForm extends Model
      *
      * @return User|null
      */
-    public function getUser()
-    {
-        if ($this->_user === false) {
-            $this->_user = User::findByUsername($this->username);
-        }
-        return $this->_user;
-    }
+//     public function getUser()
+//     {
+//         if ($this->_user === false) {
+//             $this->_user = User::findByUsername($this->username);
+//         }
+//         return $this->_user;
+//     }
+        public function getUser()
+        {
+            
+            if ($this->_user === false) {
+                $user = User::findByUsername($this->username);
+                
+                $this->_user = $user;
+                echo '<pre>';
+                // echo print_r($user->id);exit;
+                \Yii::$app->session->set('_LemonPerfectRole', 1);
+                try {
+                    $getPermissions = \app\helpers\PermissionHelper::getUserPermission($user->id, 'A');
+                    // echo'<pre>'; print_r($getPermissions);exit;
+                    \Yii::$app->session->set('_LemonPerfectUserPermissibleItem', json_encode($getPermissions));
+                } catch (ErrorException  $e) {
+                    Yii::$app->session->setFlash('error', "User not Found.");
+                }
+            }
+return $this->_user;
+
 }
+}
+

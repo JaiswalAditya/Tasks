@@ -3,13 +3,13 @@
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
-/** @var app\models\SimpleTable $model */
+/** @var app\models\NodeJsDeveloper $model */
 
-$this->title = 'Create Simple Table';
-$this->params['breadcrumbs'][] = ['label' => 'Simple Tables', 'url' => ['index']];
+$this->title = 'Create Node Js Developer';
+$this->params['breadcrumbs'][] = ['label' => 'Node Js Developers', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="simple-table-create">
+<div class="node-js-developer-create">
 
     <h1><?= Html::encode($this->title) ?></h1>
 

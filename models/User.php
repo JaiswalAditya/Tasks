@@ -6,7 +6,7 @@ use yii\db\ActiveRecord;
 
 class User extends ActiveRecord implements \yii\web\IdentityInterface
 {
-    public $id;
+    public $admin_id;
     public $username;
     // public $password;
     public $authKey;
@@ -37,10 +37,9 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
     /**
      * {@inheritdoc}
      */
-    public static function findIdentity($id)
+    public static function findIdentity($admin_id)
     {
-
-        return static::findOne(['id'=>$id,'is_active'=>1,'is_deleted'=>0]);
+        return static::findOne(['id'=>$admin_id,'is_active'=>1,'is_deleted'=>0]);
         // return isset(self::$users[$id]) ? new static(self::$users[$id]) : null;
     }
 
