@@ -7,11 +7,11 @@ use yii\db\ActiveRecord;
 class User extends ActiveRecord implements \yii\web\IdentityInterface
 {
     public $admin_id;
-    public $username;
+    public $username->name = 'anwehal';
     // public $password;
     public $authKey;
     public $accessToken;
-
+    
     // private static $users = [
     //     '100' => [
     //         'id' => '100',

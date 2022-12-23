@@ -34,7 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'emp_age',
             'no_of_experience',
             'language_used',
-            //'framework_used',
+            'framework_used',
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, AndroidDeveloper $model, $key, $index, $column) {

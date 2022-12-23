@@ -66,7 +66,7 @@ class AdminController extends Controller
         $searchModel = new AdminSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
         // $json = \Yii::$app->session['_LemonPerfectUserPermissibleItem'];
-        // $perm = json_decode($json, true);
+        // $perm = json_decode($j   son, true);
  
         // echo "<pre>";
         // print_r(\app\helpers\PermissionHelper::getUserPermissibleAction(1));

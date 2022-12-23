@@ -72,11 +72,11 @@ AppAsset::register($this);
 
                             <li style="list-style-type: none;">
                                 <div class="mcollapse" id="module<?php echo $row['auth_module_id']; ?>">
-                                    <input class="i-checks mIcheck" <?php echo ($checkAll == 0) ? '' : 'checked="checked"' ?> id="chk<?php echo $row['auth_module_id']; ?>" type="checkbox" name="module_list[]" value="<?php echo $row['auth_module_id']; ?>" onclick="permission.checkUncheckCheckbox(<?php echo $row['auth_module_id']; ?>)" />
+                                       <input class="i-checks mIcheck" <?php echo ($checkAll == 0) ? '' : 'checked="checked"' ?> id="chk<?php echo $row['auth_module_id']; ?>" type="checkbox" name="module_list[]" value="<?php echo $row['auth_module_id']; ?>" onclick="permission.checkUncheckCheckbox(<?php echo $row['auth_module_id']; ?>)" />
                                     <a style="width: 96%;" class="pull" onclick="permission.showHideTreeNode(this,<?php echo $row['auth_module_id']; ?>)" href="javascript:;"> <span class="pull" style="margin: 4px 5px 8px 5px;;display: inline-block"><b><?php echo $row['auth_module_name']; ?></b></span>
                                         <i class="fa fa-plus-square fa-2x float-right"></i>
                                     </a>
-
+                            
                                     <ul class="tree-engine" id="tree-engine-194" style="display:none">
                                         <?php
                                         if (!empty($row['items'])) {
