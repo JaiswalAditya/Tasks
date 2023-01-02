@@ -43,7 +43,6 @@ class Admin extends \yii\db\ActiveRecord
             [['file'], 'file'],
             [['is_active', 'is_deleted'], 'integer'],
             [['name','logo'], 'string', 'max' => 100],
-            [['is_active', 'is_deleted'], 'integer'],
             [['name', 'email','logo'], 'string', 'max' => 100],
             [['password'], 'string', 'max' => 300],
         ];
