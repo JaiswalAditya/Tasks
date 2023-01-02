@@ -60,6 +60,17 @@ class AdminController extends Controller
 
         // build a DB query to get all articles with status = 1
         $query = Admin::find()->where(['is_active' => 1]);
+        // $json = \Yii::$app->session['_LemonPerfectUserPermissibleItem'];
+        // $perm = json_decode($j   son, true);
+
+        // echo "<pre>";
+        // print_r(\app\helpers\PermissionHelper::getUserPermissibleAction(1));
+        // // print_r($perm);
+        // exit;
+
+
+        // build a DB query to get all articles with status = 1
+        $query = Admin::find()->where(['id' => 1]);
         // get the total number of Admin (but do not fetch the admin data yet)
         $countQuery = clone $query;
         // create a pagination object with the total count
@@ -74,6 +85,7 @@ class AdminController extends Controller
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
 //            'models' => $models,
+            'models' => $models,
             'pages' => $pages,
         ]);
     }
@@ -105,6 +117,7 @@ class AdminController extends Controller
             // ->where(['is_active' => 1])
             ->asArray()
             ->all();
+
         $result = [];
 
         foreach ($modules as $row) {
@@ -112,6 +125,7 @@ class AdminController extends Controller
             array_push($result, $row);
         }
         //echo phpinfo();
+//echo phpinfo();
         if ($this->request->isPost) {
             if ($model->load($this->request->post())) {
                 //get the instance of the uploaded file.
@@ -120,6 +134,24 @@ class AdminController extends Controller
                 $model->file->SaveAs('uploads/' . $imageName . '.' . $model->file->extension);
                 $fileName = $imageName . '.' . $model->file->extension;
                 $uploadedImage = getimagesize('uploads/' . $fileName);
+
+                $width = $uploadedImage[0];
+                $height = $uploadedImage[1];
+//                print_r($width);exit
+
+                if ($width > 1000 || $height > 1000) {
+//                    $heightResize = 1000 * ($width / $height);
+////                    print_r();exit;
+//
+//                    $imageResize = Yii::$app->image->load('uploads/' . $fileName);
+//                    $imageResize->resize(1000, $heightResize);
+//                    $imageResize->save();
+                    $uid = uniqid(time(), true);
+                    $destNameJpg = $uid . ".jpg";
+                    \app\helpers\AppHelper::resize('uploads/' . $fileName, 'uploads/' . $destNameJpg, 900, 1200, 100);
+                    if ($fileName != $destNameJpg)
+                        @unlink('uploads/' . $fileName);
+                }
 
 
                 //save the path in db column
@@ -131,6 +163,7 @@ class AdminController extends Controller
                 $model->is_active = 1;
 
                 if ($model->save()) {
+                if ($model->save(false)) {
                     if (!empty($request['item_list'])) {
                         foreach ($request['item_list'] as $item) {
                             $assignment = new \app\models\AuthAssignment();
@@ -159,6 +192,84 @@ class AdminController extends Controller
         ]);
     }
 
+    // THE Dependent dropdown List
+//    public function actionSubcat()
+//    {
+//        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+//        $out = [];
+//        if (isset($_POST['depdrop_parents'])) {
+//            $parents = $_POST['depdrop_parents'];
+//            if ($parents != null) {
+//                $cat_id = $parents[0];
+//                $out = self::getSubCatList($cat_id);
+//                // the getSubCatList function will query the database based on the
+//                // cat_id and return an array like below:
+//                // [
+//                //    ['id'=>'<sub-cat-id-1>', 'name'=>'<sub-cat-name1>'],
+//                //    ['id'=>'<sub-cat_id_2>', 'name'=>'<sub-cat-name2>']
+//                // ]
+//                return ['output' => $out, 'selected' => ''];
+//            }
+//        }
+//        return ['output' => '', 'selected' => ''];
+//    }
+//
+////    public function actionProd()
+////    {
+////        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+////        $out = [];
+////        if (isset($_POST['depdrop_parents'])) {
+////            $ids = $_POST['depdrop_parents'];
+////            $cat_id = empty($ids[0]) ? null : $ids[0];
+////            $subcat_id = empty($ids[1]) ? null : $ids[1];
+////            if ($cat_id != null) {
+////                $data = self::getProdList($cat_id, $subcat_id);
+////                /**
+////                 * the getProdList function will query the database based on the
+////                 * cat_id and sub_cat_id and return an array like below:
+////                 *  [
+////                 *      'out'=>[
+////                 *          ['id'=>'<prod-id-1>', 'name'=>'<prod-name1>'],
+////                 *          ['id'=>'<prod_id_2>', 'name'=>'<prod-name2>']
+////                 *       ],
+////                 *       'selected'=>'<prod-id-1>'
+////                 *  ]
+////                 */
+////
+////                return ['output' => $data['out'], 'selected' => $data['selected']];
+////            }
+////        }
+////        return ['output' => '', 'selected' => ''];
+////    }
+
+//    public function actionMultiple(){
+//        $upload = new Pictures();
+//        $products = Admin::find()->where(['is_active'=>1])->all();
+//
+//        if($upload->load(yii::$app->request->post())){
+//            $upload->image = UploadedFile::getInstance($upload,'image');
+//
+//            if($upload->load(yii::app->request->post())){
+//                if($upload->image && $upload->validate()){
+//                    if(!file_exits((Url::to('@webfront/uploads/')))){
+//                        mkdir(Url::to('@webfront/uploads/'),0777,true);
+//                    }
+//                    $path = Url::to('@webfront/uploads/');
+//                    foreach($upload->image as $images){
+//                        $model = new Pictures();
+//                        $model->image = time().rand(100,999).'.'.$image->extension;
+//                        if($model->save()){
+//                            $image->saveAs($path.$model->image);
+//                        }
+//                    }
+//                    return $this->redirect(['index']);
+//                }
+//            }
+//        }
+//
+//        return $this->render('multiple',['upload'=>$upload, 'admin'=>ArrayHelper::map($products,'id','name')]);
+//    }
+//
     /**
      * Updates an existing Admin model.
      * If update is successful, the browser will be redirected to the 'view' page.

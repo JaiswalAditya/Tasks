@@ -39,6 +39,7 @@ $poitemList = \yii\helpers\ArrayHelper::map($poitemList,'id','po_item_no');
 <div class="admin-form">
 
         <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
+    <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 

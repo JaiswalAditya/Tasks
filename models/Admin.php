@@ -25,6 +25,7 @@ class Admin extends \yii\db\ActiveRecord
     public $file;
     public $products;
 //    public $name;
+    public $name = 'aditya';
     public static function tableName()
     {
         return 'admin';
@@ -42,6 +43,13 @@ class Admin extends \yii\db\ActiveRecord
             [['file'], 'file'],
             [['is_active', 'is_deleted'], 'integer'],
             [['name','logo'], 'string', 'max' => 100],
+            [['name', 'email', 'password', 'gender'], 'required'],
+            [['gender','products'], 'string'],
+            [['email'], 'unique'],
+            [['file'], 'file'],
+//            [['order_item'], 'safe'],
+            [['is_active', 'is_deleted'], 'integer'],
+            [['name', 'email','logo'], 'string', 'max' => 100],
             [['password'], 'string', 'max' => 300],
         ];
     }
