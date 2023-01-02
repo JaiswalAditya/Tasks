@@ -163,33 +163,34 @@ class AdminController extends Controller
                 $model->is_active = 1;
 
                 if ($model->save()) {
-                if ($model->save(false)) {
-                    if (!empty($request['item_list'])) {
-                        foreach ($request['item_list'] as $item) {
-                            $assignment = new \app\models\AuthAssignment();
-                            $assignment->auth_item_id = $item;
-                            $assignment->user_id = $model->id;
-                            $assignment->user_type = 'A';
-                            $assignment->created_at = date('Y-m-d H:i:s');
+                    if ($model->save(false)) {
+                        if (!empty($request['item_list'])) {
+                            foreach ($request['item_list'] as $item) {
+                                $assignment = new \app\models\AuthAssignment();
+                                $assignment->auth_item_id = $item;
+                                $assignment->user_id = $model->id;
+                                $assignment->user_type = 'A';
+                                $assignment->created_at = date('Y-m-d H:i:s');
 
-                            if (!$assignment->save()) {
-                                die(json_encode($assignment->errors));
+                                if (!$assignment->save()) {
+                                    die(json_encode($assignment->errors));
+                                }
                             }
                         }
+
+                        return $this->redirect(['index', 'id' => $model->id]);
                     }
-
-                    return $this->redirect(['index', 'id' => $model->id]);
                 }
+            } else {
+                $model->loadDefaultValues();
             }
-        } else {
-            $model->loadDefaultValues();
-        }
 
-        return $this->render('create', [
-            'model' => $model,
-            'result' => $result,
-            'id' => -1
-        ]);
+            return $this->render('create', [
+                'model' => $model,
+                'result' => $result,
+                'id' => -1
+            ]);
+        }
     }
 
     // THE Dependent dropdown List
