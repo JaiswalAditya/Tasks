@@ -12,6 +12,7 @@ use Yii;
  * @property string $email
  * @property string $password
  * @property string $gender
+ * @property string $logo
  * @property string $department
  * @property int $is_active
  * @property int $is_deleted
@@ -21,6 +22,8 @@ class Admin extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
+    public $file;
+    public $products;
     public $name = 'aditya';
     public static function tableName()
     {
@@ -34,10 +37,12 @@ class Admin extends \yii\db\ActiveRecord
     {
         return [
             [['name', 'email', 'password', 'gender'], 'required'],
-            [['gender'], 'string'],
+            [['gender','products'], 'string'],
             [['email'], 'unique'],
+            [['file'], 'file'],
+//            [['order_item'], 'safe'],
             [['is_active', 'is_deleted'], 'integer'],
-            [['name', 'email'], 'string', 'max' => 100],
+            [['name', 'email','logo'], 'string', 'max' => 100],
             [['password'], 'string', 'max' => 300],
         ];
     }
@@ -53,9 +58,11 @@ class Admin extends \yii\db\ActiveRecord
             'email' => 'Email',
             'password' => 'Password',
             'gender' => 'Gender',
+            'products' => 'Products',
             // 'department' => 'department',
             'is_active' => 'Is Active',
             'is_deleted' => 'Is Deleted',
+            'file' => 'logo',
         ];
     }
 }

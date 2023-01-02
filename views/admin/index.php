@@ -23,7 +23,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>
         <?= Html::a('Create User', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+        </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <?php  $gridColumns = [
@@ -46,6 +46,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             // 'password',
             'is_active',
+            'logo',
             [
                 'attribute' => 'gender',
                 'filterInputOptions' => [
