@@ -40,13 +40,25 @@ class AdminSearch extends Admin
      */
     public function search($params)
     {
-        $query = Admin::find();
+        $query = Admin::find()->orderBy(['id' => SORT_DESC]);
 
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => false,
         ]);
+        $dataProvider->setSort([
+            'attributes' => [
+                'id' => [
+                    'asc' => ['id' => SORT_ASC],
+                    'desc' => ['id' => SORT_DESC],
+                    'default' => SORT_ASC
+                ],
+//            'defaultOrder' => [
+//                'gender' => SORT_ASC
+//            ]
+        ]]);
 
         $this->load($params);
 
@@ -61,7 +73,7 @@ class AdminSearch extends Admin
             'id' => $this->id,
             'gender' => $this->gender,
             'email' => $this->email,
-
+            'name' => $this->name,
             'is_active' => $this->is_active,
             'is_deleted' => $this->is_deleted,
         ]);

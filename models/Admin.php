@@ -12,6 +12,7 @@ use Yii;
  * @property string $email
  * @property string $password
  * @property string $gender
+ * @property string $logo
  * @property string $department
  * @property int $is_active
  * @property int $is_deleted
@@ -21,23 +22,26 @@ class Admin extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public $name = 'aditya';
+    public $file;
+    public $products;
+//    public $name;
     public static function tableName()
     {
         return 'admin';
     }
-
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['name', 'email', 'password', 'gender'], 'required'],
-            [['gender'], 'string'],
-            [['email'], 'unique'],
+            [['name','email', 'password', 'gender'], 'required'],
+            [['gender','products'], 'string'],
+//            [['email'], 'unique'],
+            ['email', 'unique', 'targetClass' => '\app\models\User', 'message' => 'This email address has already been taken.'],
+            [['file'], 'file'],
             [['is_active', 'is_deleted'], 'integer'],
-            [['name', 'email'], 'string', 'max' => 100],
+            [['name','logo'], 'string', 'max' => 100],
             [['password'], 'string', 'max' => 300],
         ];
     }
@@ -53,9 +57,11 @@ class Admin extends \yii\db\ActiveRecord
             'email' => 'Email',
             'password' => 'Password',
             'gender' => 'Gender',
+            'products' => 'Products',
             // 'department' => 'department',
             'is_active' => 'Is Active',
             'is_deleted' => 'Is Deleted',
+            'file' => 'logo',
         ];
     }
 }

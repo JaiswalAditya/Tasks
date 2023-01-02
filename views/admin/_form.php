@@ -1,10 +1,17 @@
 <?php
 
+use kartik\file\FileInput;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use app\assets\AppAsset;
 use yii\helpers\BaseUrl;
-use yii\bootstrap4\BootstrapAsset;
+use yii\bootstrap5\BootstrapAsset;
+use kartik\depdrop\DepDrop;
+//use kartik\widgets\FileInput;
+// or 'use kartikile\FileInput' if you have only installed yii2-widget-fileinput in isolation
+use yii\helpers\Url;
+
+
 /* @var yii\web\View $this /    
 /* @var app\models\Admin $model /
 /* @var yii\widgets\ActiveForm $form /
@@ -12,6 +19,7 @@ use yii\bootstrap4\BootstrapAsset;
 /**
  * AdminController implements the CRUD actions for Admin model.
  */
+
 AppAsset::register($this);
  $this->registerJsFile(BaseUrl::home() . 'js/permission.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 /** @var yii\web\View $this */
@@ -19,15 +27,44 @@ AppAsset::register($this);
 /** @var yii\widgets\ActiveForm $form */
 ?>
 
+<?php
+$poList = \app\models\Po::find()->all();
+$poList = \yii\helpers\ArrayHelper::map($poList,'id','po_no');
+
+$poitemList = \app\models\PoItem::find()->all();
+$poitemList = \yii\helpers\ArrayHelper::map($poitemList,'id','po_item_no');
+//print_r($poList);
+//exit;
+?>
 <div class="admin-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+        <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'password')->passwordInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'password')->passwordInput(['maxlength' => true]) ?><br/>
+    
+    <?= $form->field($model, 'file')->fileInput(); ?>
+    <?php //= \cozumel\cropper\ImageCropper::widget(['id' => 'file']); ?>
+
+    <?php echo FileInput::widget([
+    'name' => 'attachment_48[]',
+    'options'=>[
+    'multiple'=>true
+    ],
+    'pluginOptions' => [
+    'uploadUrl' => Url::to(['/admin/upload']),
+
+    'uploadExtraData' => [
+    'admin_id' => uniqid(),
+    ],
+
+    'maxFileCount' => 10,
+        'initialPreviewAsData' => true
+    ]
+    ]);?>
 
     <?= $form->field($model, 'gender')->dropDownList(
        ['...','Male' => 'Male', 'Female' => 'Female', 'Others' => 'Others']
@@ -56,7 +93,7 @@ AppAsset::register($this);
                 }
                 ?>
                 <ul class="tree-make">
-                    <input class="i-checks pIcheck" <?php echo ($checkAll == 0) ? '' : 'checked="checked"' ?> id="check-all" type="checkbox" onclick="permission.togglePermission()" /> <label>Select all</label>
+                    <input class="i-checks pIcheck" <?php echo ($checkAll == 0) ? '' : 'checked="checked"' ?>id="check-all" type="checkbox" onclick="permission.togglePermission()" /> <label>Select all</label>
                     <br>
                     <?php
 

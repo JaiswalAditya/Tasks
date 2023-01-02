@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\Admin;
 use app\models\AdminSearch;
+use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -12,7 +13,9 @@ use \yii\data\Pagination;
 use yii\filters\AccessControl;
 use app\components\AccessRule;
 use app\components\UserIdentity;
-
+use yii\web\UploadedFile;
+use app\models\Pictures;
+use yii\helpers\ArrayHelper;
 use Yii;
 
 class AdminController extends Controller
@@ -28,8 +31,8 @@ class AdminController extends Controller
                 'ruleConfig' => [
                     'class' => AccessRule::className(),
                 ],
-                'only' =>   ['index', 'view', 'create', 'update'],
-                
+                'only' => ['index', 'view', 'create', 'update'],
+
                 'rules' => [
                     [
                         'actions' => \app\helpers\PermissionHelper::getUserPermissibleAction(1),
@@ -41,18 +44,6 @@ class AdminController extends Controller
                 ],
             ],
         ];
-        // return array_merge(
-        //     parent::behaviors(),
-        //     [
-        //         'verbs' => [
-        //             'class' => VerbFilter::className(),
-        //             'actions' => [
-        //                 'delete' => ['POST'],
-        //             ],
-        //         ],
-        //     ]
-        // );
-
     }
 
     /**
@@ -64,34 +55,27 @@ class AdminController extends Controller
     {
         // $this->layout = false;
         $searchModel = new AdminSearch();
+//        print_r($this->request->queryParams);exit;
         $dataProvider = $searchModel->search($this->request->queryParams);
-        // $json = \Yii::$app->session['_LemonPerfectUserPermissibleItem'];
-        // $perm = json_decode($j   son, true);
- 
-        // echo "<pre>";
-        // print_r(\app\helpers\PermissionHelper::getUserPermissibleAction(1));
-        // // print_r($perm);
-        // exit;
-       
 
-       // build a DB query to get all articles with status = 1
-        $query = Admin::find()->where(['id' => 1]);
+        // build a DB query to get all articles with status = 1
+        $query = Admin::find()->where(['is_active' => 1]);
         // get the total number of Admin (but do not fetch the admin data yet)
         $countQuery = clone $query;
         // create a pagination object with the total count
         $pages = new Pagination(['totalCount' => $countQuery->count()]);
         // limit the query using the pagination and retrieve the admin
         $models = $query->offset($pages->offset)
-             ->limit($pages->limit)
-             ->all();
- 
-       
-       return $this->render('index', [
-        'searchModel' => $searchModel,
-        'dataProvider' => $dataProvider,
-        'models' => $models,
-        'pages' => $pages,
-    ]);
+            ->limit($pages->limit)
+            ->all();
+
+
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+//            'models' => $models,
+            'pages' => $pages,
+        ]);
     }
 
     /**
@@ -112,77 +96,41 @@ class AdminController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
-    // public function actionCreate()
-    // {
-    //     $model = new Admin();
 
-    //     if ($this->request->isPost) {
-    //         // echo print_r($this->request->post()['Admin']['password']);exit;
-
-    //         if ($model->load($this->request->post())) {
-    //             // $model->password = Security::generatePasswordHash($this->password_field);
-    //             $model->password = \Yii::$app->security->generatePasswordHash($this->request->post()['Admin']['password']);
-
-    //                 if($model->save()){
-    //                     return $this->redirect(['view', 'id' => $model->id]);
-
-    //                 }
-
-    //         }
-    //     } else {
-    //         $model->loadDefaultValues();
-    //     }
-
-    //     return $this->render('create', [
-    //         'model' => $model,
-    //     ]);
-    // }
-
-    // /**
-    //  * Updates an existing Admin model.
-    //  * If update is successful, the browser will be redirected to the 'view' page.
-    //  * @param int $id ID
-    //  * @return string|\yii\web\Response
-    //  * @throws NotFoundHttpException if the model cannot be found
-    //  */
-    // public function actionUpdate($id)
-    // {
-    //     $model = $this->findModel($id);
-
-    //     if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-    //         return $this->redirect(['view', 'id' => $model->id]);
-    //     }
-
-    //     return $this->render('update', [
-    //         'model' => $model,
-    //     ]);
-    // }
     public function actionCreate()
     {
         $model = new Admin();
         $modules = \app\models\AuthModule::find()
-        ->orderBy(['auth_module_name' => SORT_ASC])
-        // ->where(['is_active' => 1])
-        ->asArray()
-        ->all();
-
+            ->orderBy(['auth_module_name' => SORT_ASC])
+            // ->where(['is_active' => 1])
+            ->asArray()
+            ->all();
         $result = [];
 
         foreach ($modules as $row) {
             $row['items'] = $this->getModuleItem($row['auth_module_id']);
             array_push($result, $row);
         }
-
+        //echo phpinfo();
         if ($this->request->isPost) {
             if ($model->load($this->request->post())) {
+                //get the instance of the uploaded file.
+                $imageName = $model->name;
+                $model->file = UploadedFile::getInstance($model, 'file');
+                $model->file->SaveAs('uploads/' . $imageName . '.' . $model->file->extension);
+                $fileName = $imageName . '.' . $model->file->extension;
+                $uploadedImage = getimagesize('uploads/' . $fileName);
+
+
+                //save the path in db column
+                $model->logo = 'uploads/' . $imageName . '.' . $model->file->extension;
                 $request = Yii::$app->request->bodyParams;
 
                 $password = $request['Admin']['password'];
                 $model->password = Yii::$app->security->generatePasswordHash($password);
                 $model->is_active = 1;
 
-                if($model->save(false)){
-
+                if ($model->save()) {
                     if (!empty($request['item_list'])) {
                         foreach ($request['item_list'] as $item) {
                             $assignment = new \app\models\AuthAssignment();
@@ -210,7 +158,7 @@ class AdminController extends Controller
             'id' => -1
         ]);
     }
- 
+
     /**
      * Updates an existing Admin model.
      * If update is successful, the browser will be redirected to the 'view' page.
@@ -218,6 +166,48 @@ class AdminController extends Controller
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
+
+ public function actionUpload() {
+        $files = array();
+        $allwoedFiles = ['jpg', 'png'];
+        if ($_FILES) {
+            if ($_FILES) {
+//                print_r($_POST);exit;
+                $tmpname = $_FILES['attachment_48']['tmp_name'][0];
+                $fname = $_FILES['attachment_48']['name'][0];
+                //Get the temp file path
+                $tmpFilePath = $tmpname;
+                //Make sure we have a filepath
+                if ($tmpFilePath != "") {
+                    //save the filename
+                    $shortname = $fname;
+                    $size = $_FILES['attachment_48']['size'][0];
+                    $ext = substr(strrchr($shortname, '.'), 1);
+                    if (in_array($ext, $allwoedFiles)) {
+                        //save the url and the file
+                        $uid = uniqid(time(), true);
+                        $newFileName = $uid . "." . $ext;
+                        //Upload the file into the temp dir
+                        if (move_uploaded_file($tmpFilePath, 'uploads/' . $newFileName)) {
+
+                            $newProductImage = new Pictures();
+                            $newProductImage->tmp_admin_id = $_POST['admin_id'];
+                            $newProductImage->image = $newFileName;
+
+                            $newProductImage->save(false);
+                            $files['initialPreview'] = Url::base(TRUE) . '/uploads/' . $newFileName;
+                            $files['initialPreviewAsData'] = true;
+                            $files['initialPreviewConfig'][]['key'] = $newProductImage->id;
+                            return json_encode($files);
+                        }
+                    }
+                }
+            }
+            return json_encode($files);
+        }
+}
+
+
     public function actionUpdate($id)
     {
         $imageAdmin = \app\models\Admin::findOne(['id' => $id]);
@@ -236,7 +226,7 @@ class AdminController extends Controller
         if ($this->request->isPost && $model->load($this->request->post())) {
             $request = Yii::$app->request->bodyParams;
             
-            if($model->save(false)){
+            if($model->save()){
                 if (!empty($request['item_list'])) {
                     \app\models\AuthAssignment::deleteAll('user_id = :user_id', [':user_id' => $model->id]);
                     foreach ($request['item_list'] as $item) {
@@ -273,7 +263,6 @@ class AdminController extends Controller
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
-
         return $this->redirect(['index']);
     }
 

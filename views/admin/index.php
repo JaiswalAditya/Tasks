@@ -23,7 +23,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>
         <?= Html::a('Create User', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+        </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <?php  $gridColumns = [
@@ -37,15 +37,17 @@ $this->params['breadcrumbs'][] = $this->title;
                 'placeholder' => 'Search for Names  ...'
                 ]
             ],
+
             [
                 'attribute' => 'email',
                 'filterInputOptions' => [
                 'class'       => 'form-control',
-                'placeholder' => 'Search for Email...'
+                'placeholder' => 'Search for Email...',
                  ]
             ],
             // 'password',
             'is_active',
+            'logo',
             [
                 'attribute' => 'gender',
                 'filterInputOptions' => [
@@ -109,7 +111,7 @@ $this->params['breadcrumbs'][] = $this->title;
 echo ExportMenu::widget([
     'dataProvider' => $dataProvider,
     'columns' => $gridColumns,
-    'clearBuffers' => true, //optional
+    'clearBuffers' => true, //optiogesnal
 ]);
 
 // You can choose to render your own GridView separately
@@ -120,8 +122,7 @@ echo GridView::widget([
 ]);?> 
     
     
-    <?php echo LinkPager::widget([
-             'pagination' => $pages, ]);?>
+
 
 
 </div>

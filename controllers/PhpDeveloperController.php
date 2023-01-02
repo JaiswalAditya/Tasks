@@ -4,9 +4,12 @@ namespace app\controllers;
 
 use app\models\PhpDeveloper;
 use app\models\PhpDeveloperSearch;
+use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
 
 /**
  * PhpDeveloperController implements the CRUD actions for PhpDeveloper model.
@@ -70,7 +73,12 @@ class PhpDeveloperController extends Controller
         $model = new PhpDeveloper();
 
         if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
+            if ($model->load($this->request->post())) {
+                if ($model->save()) {
+                    Yii::$app->session->setFlash('success', "User created successfully.");
+                } else {
+                    Yii::$app->session->setFlash('error', "User not saved.");
+                }
                 return $this->redirect(['view', 'emp_id' => $model->emp_id]);
             }
         } else {
