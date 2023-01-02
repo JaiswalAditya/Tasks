@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var app\models\Certifications $model */
 
-$this->title = 'Update Certifications: ' . $model->certification_id;
+$this->title = 'Update : ' . $model->label_en;
 $this->params['breadcrumbs'][] = ['label' => 'Certifications', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->certification_id, 'url' => ['view', 'certification_id' => $model->certification_id]];
 $this->params['breadcrumbs'][] = 'Update';

@@ -15,7 +15,7 @@ use app\components\AccessRule;
 use app\components\UserIdentity;
 use yii\web\UploadedFile;
 use app\models\Pictures;
-use yii\helpers\ArrayHelper;
+//use yii\helpers\ArrayHelper;
 use Yii;
 
 class AdminController extends Controller
@@ -185,12 +185,13 @@ class AdminController extends Controller
                 $model->loadDefaultValues();
             }
 
-            return $this->render('create', [
-                'model' => $model,
-                'result' => $result,
-                'id' => -1
-            ]);
+
         }
+        return $this->render('create', [
+            'model' => $model,
+            'result' => $result,
+            'id' => -1
+        ]);
     }
 
     // THE Dependent dropdown List

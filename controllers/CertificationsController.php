@@ -41,7 +41,7 @@ class CertificationsController extends Controller
                 if ($type == "A") {
                     $certification->is_active = !$certification->is_active;
                 }
-                if ($certification->save(false)) {
+                if ($certification->save()) {
                     return [
                         'status' => 200,
                         'success' => true,
@@ -90,7 +90,7 @@ class CertificationsController extends Controller
         $model = new Certifications();
 
         if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
+            if ($model->load($this->request->post())) {
                 //For English Image Upload
                 //get the instance of the uploaded file.
                 $imageName = uniqid();

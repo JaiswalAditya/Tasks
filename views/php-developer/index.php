@@ -52,22 +52,22 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
             'emp_id',
             'emp_name',
-            [
-                'class' => 'kartik\grid\EditableColumn',
-                'attribute' => 'emp_name',
-                'pageSummary' => true,
-                'readonly' => false,
-                'content' => function($data){return '<div class="text_content">'.htmlentities($data->emp_name).'</div>';},
-                'editableOptions' => [
-                    'header' => 'Text',
-                    'inputType' => \kartik\editable\Editable::INPUT_TEXT,
-                    'options' => [
-                        'editableOptions' => [
-                            'asPopover' => false,
-                        ]
-                    ]
-                ],
-            ],
+//            [
+//                'class' => 'kartik\grid\EditableColumn',
+//                'attribute' => 'emp_name',
+//                'pageSummary' => true,
+//                'readonly' => false,
+//                'content' => function($data){return '<div class="text_content">'.htmlentities($data->emp_name).'</div>';},
+//                'editableOptions' => [
+//                    'header' => 'Text',
+//                    'inputType' => \kartik\editable\Editable::INPUT_TEXT,
+//                    'options' => [
+//                        'editableOptions' => [
+//                            'asPopover' => false,
+//                        ]
+//                    ]
+//                ],
+//            ],
             'emp_age',
             'no_of_experience',
             'language_used',

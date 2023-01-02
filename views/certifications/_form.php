@@ -1,5 +1,6 @@
 <?php
 
+use kartik\file\FileInput;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -18,14 +19,18 @@ use yii\widgets\ActiveForm;
 
     <div class="col-sm-6">
         <?= $form->field($model, 'label_ar')->textInput(['maxlength' => true]) ?>
+        <br/>
     </div>
 
     <div class="col-sm-6">
-        <?= $form->field($model, 'icon_en_image')->fileInput() ?>
-    </div>
+        <?= $form->field($model, 'icon_en_image')->widget(FileInput::classname(), [
+        'options' => ['accept' => 'image/*'],
+        ]);?>   </div>
+
     <div class="col-sm-6">
-        <?= $form->field($model, 'icon_ar_image')->fileInput() ?>
-    </div>
+        <?= $form->field($model, 'icon_ar_image')->widget(FileInput::classname(), [
+            'options' => ['accept' => 'image/*'],
+        ]);?>   </div>
 </div>
 
 

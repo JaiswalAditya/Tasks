@@ -49,7 +49,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
             ['label' => 'Admin', 'url' => ['/site/index']],
             ['label' => 'Php Developer', 'url' => ['/php-developer/index']],
             ['label' => 'Certifications', 'url' => ['/certifications/index']],
-            ['label' => 'Purchase Order', 'url' => ['/po/index']],
+//            ['label' => 'Purchase Order', 'url' => ['/po/index']],
             ['label' => 'Country', 'url' => ['/country/index']],
             ['label' => 'Angular', 'url' => ['/angular-developer/index']],
             ['label' => 'Android', 'url' => ['/android-developer/index']],

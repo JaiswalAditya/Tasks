@@ -6,7 +6,7 @@ use yii\widgets\DetailView;
 /** @var yii\web\View $this */
 /** @var app\models\Certifications $model */
 
-$this->title = $model->certification_id;
+$this->title = $model->label_en;
 $this->params['breadcrumbs'][] = ['label' => 'Certifications', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
@@ -34,9 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'label_ar',
             'icon_en_image',
             'icon_ar_image',
-//            'sort_order',
             'is_active',
-            'is_deleted',
             'created_at',
             'updated_at',
         ],

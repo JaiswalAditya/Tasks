@@ -17,7 +17,7 @@ class CertificationsSearch extends Certifications
     public function rules()
     {
         return [
-            [['certification_id','is_active', 'is_deleted'], 'integer'],
+            [['certification_id','is_active'], 'integer'],
             [['label_en', 'label_ar', 'icon_en_image', 'icon_ar_image', 'created_at', 'updated_at'], 'safe'],
         ];
     }
@@ -60,7 +60,6 @@ class CertificationsSearch extends Certifications
         $query->andFilterWhere([
             'certification_id' => $this->certification_id,
             'is_active' => $this->is_active,
-            'is_deleted' => $this->is_deleted,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);

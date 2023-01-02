@@ -35,7 +35,8 @@ class Certifications extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['is_active', 'is_deleted'], 'integer'],
+            [['label_en', 'label_ar', 'icon_en_image', 'icon_ar_image'], 'required'],
+            [['is_active'], 'integer'],
             [['created_at', 'updated_at', 'icon_en_image', 'icon_ar_image'], 'safe'],
             [['label_en', 'label_ar'], 'string', 'max' => 255],
         ];
@@ -53,7 +54,6 @@ class Certifications extends \yii\db\ActiveRecord
             'icon_en_image' => 'English Image',
             'icon_ar_image' => 'Arabic Image',
             'is_active' => 'Is Active',
-            'is_deleted' => 'Is Deleted',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
