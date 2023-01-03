@@ -50,6 +50,8 @@ $config = [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
+//            'enableStrictParsing' => true,
+            'baseUrl' => $baseUrl,
             'rules' => [
             ],
         ],
@@ -57,6 +59,7 @@ $config = [
     'params' => $params,
     'modules' => [
         'api' => [
+//            'basePath' => '@app/modules/api',
             'class' => 'app\modules\api\Module',
         ],
         'gridview' => ['class' => 'kartik\grid\Module']

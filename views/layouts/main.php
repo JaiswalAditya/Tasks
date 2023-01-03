@@ -52,6 +52,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
 //            ['label' => 'Purchase Order', 'url' => ['/po/index']],
             ['label' => 'Country', 'url' => ['/country/index']],
             ['label' => 'Angular', 'url' => ['/angular-developer/index']],
+            ['label' => 'Products', 'url' => ['/products/index']],
             ['label' => 'Android', 'url' => ['/android-developer/index']],
             Yii::$app->user->isGuest
                 ? ['label' => 'Login', 'url' => ['/site/login']]
