@@ -7,10 +7,13 @@ use app\models\ProductImages;
 use app\models\Products;
 use app\models\ProductsSearch;
 use Yii;
+use yii\helpers\FileHelper;
+use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
 
 /**
  * ProductsController implements the CRUD actions for Products model.
@@ -74,78 +77,129 @@ class ProductsController extends Controller
         $model = new Products();
 
         if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'product_id' => $model->product_id]);
+            if ($model->load($this->request->post()) ) {
+//                echo "<pre>";
+//                print_r($_POST['Products']['tmp_product_id']);exit();
+                $images = UploadedFile::getInstances($model, 'product_image');
+                if($model->save()){
+                    if (!empty($model->tmp_product_id)) {
+                        $productImages = ProductImages::find()->where([
+                            'tmp_product_id' => $model->tmp_product_id
+                        ])->all();
+                        foreach ($productImages as $productImage) {
+                            $productImage->product_id = $model->product_id;
+                            $productImage->save(false);
+                        }
+                    }
+                    return $this->redirect(['view', 'product_id' => $model->product_id]);
+                }
             }
         } else {
             $model->loadDefaultValues();
         }
-
         return $this->render('create', [
             'model' => $model,
         ]);
     }
-//    public function actionUpload() {
-//        $files = array();
-//        $allwoedFiles = ['jpg', 'png'];
-//        if ($_FILES) {
-//            if ($_FILES) {
-////                print_r($_POST);exit;
-//                $tmpname = $_FILES['attachment_48']['tmp_name'][0];
-//                $fname = $_FILES['attachment_48']['name'][0];
-////                print_r($fname);
-//                //Get the temp file path
-//                $tmpFilePath = $tmpname;
-//                //Make sure we have a filepath
-//                if ($tmpFilePath != "") {
-//                    //save the filename
-//                    $shortname = $fname;
-//                    $size = $_FILES['attachment_48']['size'][0];
-//                    $ext = substr(strrchr($shortname, '.'), 1);
-//                    if (in_array($ext, $allwoedFiles)) {
-//                        //save the url and the file
-//                        $uid = uniqid(time(), true);
-//                        $newFileName = $uid . "." . $ext;
-//                        //Upload the file into the temp dir
-//                        if (move_uploaded_file($tmpFilePath, 'uploads/' . $newFileName)) {
-//
-//                            $newProductImage = new ProductImages();
-////                            print_r($_POST);exit;
-//                            $newProductImage->product_id = Null;
-//                            $newProductImage->tmp_product_id = $_POST['products_id'];
-//                            $newProductImage->image = $newFileName;
-//
-//                            $newProductImage->save(false);
-//                            $files['initialPreview'] = Url::base(TRUE) . '/uploads/' . $newFileName;
-//                            $files['initialPreviewAsData'] = true;
-//                            $files['initialPreviewConfig'][]['key'] = $newProductImage->product_id;
-//                            return json_encode($files);
-//                        }
-//                    }
-//                }
-//            }
-//            return json_encode($files);
-//        }
-//    }
-//
-//    public function actionDeleteImage() {
-//        $key = $_POST['key'];
-//        if (is_numeric($key)) {
-//            $product_image = \app\models\Products::find()
-//                ->where([
-//                    'OR',
-//                    ['area_guide_image_id' => $key],
-//                    ['area_guide_temp_id' => $key],
-//
-//                ])->one();
-//            $filename=Yii::getAlias('@webroot') . '/uploads/' . $product_image->image;
-//            if (file_exists($filename)) {
-//                unlink($filename);
-//            }
-//            $product_image->delete();
-//            return true;
-//        }
-//    }
+    public function actionUpload() {
+        $files = array();
+        $allwoedFiles = ['jpg', 'png'];
+        if ($_POST['is_post'] == 'update') {
+            $product_id = $_POST['product_id'];
+            if ($_FILES) {
+                // debugPrint($_FILES);exit;
+                $tmpname = $_FILES['Products']['tmp_name']['product_images'][0];
+                $fname = $_FILES['Products']['name']['product_images'][0];
+                //Get the temp file path
+                $tmpFilePath = $tmpname;
+                //Make sure we have a filepath
+                if ($tmpFilePath != "") {
+                    //save the filename
+                    $shortname = $fname;
+                    $size = $_FILES['Products']['size']['product_images'][0];
+                    $ext = substr(strrchr($shortname, '.'), 1);
+                    if (in_array($ext, $allwoedFiles)) {
+                        //save the url and the file
+                        $uid = uniqid(time(), true);
+                        $newFileName = $uid . "." . $ext;
+                        //Upload the file into the temp dir
+                        if (move_uploaded_file($tmpFilePath, 'uploads/' . $newFileName)) {
+
+                            $newProductImage = new ProductImages();
+                            $newProductImage->product_id = $product_id;
+                            $newProductImage->image = $newFileName;
+
+                            $newProductImage->save(false);
+                            $files['initialPreview'] = Url::base(TRUE) . '/uploads/' . $newFileName;
+                            $files['initialPreviewAsData'] = true;
+                            $files['initialPreviewConfig'][]['key'] = $newProductImage->product_image_id;
+                            return json_encode($files);
+                        }
+                    }
+                }
+            }
+            return json_encode($files);
+        } else {
+            if (isset($_POST)) {
+                if ($_FILES) {
+                    if ($_FILES) {
+//                print_r($_FILES);exit;
+                        $tmpname = $_FILES['Products']['tmp_name']['product_images'][0];
+                        $fname = $_FILES['Products']['name']['product_images'][0];
+                        //Get the temp file path
+                        $tmpFilePath = $tmpname;
+                        //Make sure we have a filepath
+                        if ($tmpFilePath != "") {
+                            //save the filename
+                            $shortname = $fname;
+                            $size = $_FILES['Products']['size']['product_images'][0];
+                            $ext = substr(strrchr($shortname, '.'), 1);
+                            if (in_array($ext, $allwoedFiles)) {
+                                //save the url and the file
+                                $uid = uniqid(time(), true);
+                                $newFileName = $uid . "." . $ext;
+                                //Upload the file into the temp dir
+                                if (move_uploaded_file($tmpFilePath, 'uploads/' . $newFileName)) {
+                                    $newProductImage = new ProductImages();
+//                            print_r($_POST);exit;
+                                    $newProductImage->product_id = null;
+                                    $newProductImage->tmp_product_id = $_POST['uniqueId'];
+                                    $newProductImage->image = $newFileName;
+
+                                    $newProductImage->save(false);
+                                    $files['initialPreview'] = Url::base(TRUE) . '/uploads/' . $newFileName;
+                                    $files['initialPreviewAsData'] = true;
+                                    $files['initialPreviewConfig'][]['key'] = $newProductImage->product_id;
+                                    return json_encode($files);
+                                }
+                            }
+                        }
+                    }
+                    return json_encode($files);
+                }
+            }
+        }
+    }
+
+    public function actionDeleteImage() {
+        $key = $_POST['key'];
+
+        if (is_numeric($key)) {
+            $product_image = \app\models\ProductImages::find()
+                ->where([
+                    'OR',
+                    ['product_image_id' => $key],
+                    ['tmp_product_id' => $key],
+
+                ])->one();
+            $filename=Yii::getAlias('@webroot') . '/uploads/' . $product_image->image;
+            if (file_exists($filename)) {
+                unlink($filename);
+            }
+            $product_image->delete();
+            return true;
+        }
+    }
     /**
      * Updates an existing Products model.
      * If update is successful, the browser will be redirected to the 'view' page.
@@ -156,7 +210,6 @@ class ProductsController extends Controller
     public function actionUpdate($product_id)
     {
         $model = $this->findModel($product_id);
-
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
             return $this->redirect(['view', 'product_id' => $model->product_id]);
         }

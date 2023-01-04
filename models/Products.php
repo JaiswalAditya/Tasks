@@ -14,10 +14,13 @@ use Yii;
  */
 class Products extends \yii\db\ActiveRecord
 {
-        public $product_images;
+        public $product_images=[];
+        public $tmp_product_id;
+
     /**
      * {@inheritdoc}
      */
+
     public static function tableName()
     {
         return 'products';
@@ -31,6 +34,7 @@ class Products extends \yii\db\ActiveRecord
         return [
             [['name', 'price', 'quantity'], 'required'],
             [['price', 'quantity'], 'integer'],
+            [['tmp_product_id'], 'safe'],
             [['name'], 'string', 'max' => 255],
         ];
     }
@@ -46,5 +50,9 @@ class Products extends \yii\db\ActiveRecord
             'price' => 'Price',
             'quantity' => 'Quantity',
         ];
+    }
+    public function getProductImages()
+    {
+        return $this->hasMany(ProductImages::class, ['product_id' => 'product_id']);
     }
 }

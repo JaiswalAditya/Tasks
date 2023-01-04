@@ -32,8 +32,28 @@ $this->params['breadcrumbs'][] = $this->title;
             'name',
             'price',
             'quantity',
-            'image'
-        ],
+            [
+                'label' => 'Product Image',
+                'value' => function($model) {
+                    $images=\app\models\ProductImages::find()->where(['product_id'=>$model->product_id])->all();
+
+                    $product_image = '';
+                    if (!empty($images)) {
+                        foreach($images as $productImage){
+
+                            $product_image = $product_image.Html::img('/uploads/'.$productImage->image, ['width'=>'100','height'=>'100']).'&nbsp;&nbsp;';
+
+                        }
+                        return  $product_image ;
+
+                    } else {
+                        return '';
+                    }
+                },
+                'format' => 'raw',
+                'filter' => false,
+            ],
+            ],
     ]) ?>
 
 </div>

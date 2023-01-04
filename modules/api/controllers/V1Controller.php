@@ -1,9 +1,14 @@
 <?php
 
 namespace app\modules\api\controllers;
+use app\models\Admin;
 use app\models\Certifications;
+use app\models\ProductImages;
+use app\models\Products;
 use Yii;
 use yii\rest\Controller;
+use yii\web\Request;
+
 
 
 class V1Controller extends Controller
@@ -53,18 +58,104 @@ class V1Controller extends Controller
     public function actionGet(){
         return "OK";
     }
-    public function actionGetAdminRecord()
+    public function actionGetProductListing()
     {
-
-        $student = \app\models\Admin::find()->all();
-//        print_r($student);
-//        exit();
-        if (count($student) > 0) {
-            return array('status' => true, 'data' => $student);
+        $product = Products::find()->all();
+        if ($product) {
+            $productlisting= [];//created an listing array
+            foreach ($product as $pt) {
+                $product_images = []; //created an image array
+                foreach($pt->productImages as $images){
+                    $product_images[]=[
+                        'product_image_id' => $images->product_image_id,
+                        'image' => Yii::$app->urlManager->createAbsoluteUrl('' . $images['image'], 'http'),
+                    ];
+                }
+                $productlisting[] = [
+                    'product_id' => $pt->product_id,
+                    'image' => $product_images,
+                    'name' => $pt->name,
+                    'price' => $pt->price,
+                    'quantity' => $pt->quantity,
+                ];
+            }
+            return array('status' => true, 'data' => $productlisting);
         } else {
-            return array('status' => false, 'data' => 'No Student Found');
+            return array('status' => false, 'data' => 'No Product Found');
+        }
+    }
+    public function actionGetProductDetails($product_id){
+        $product = Products::find()->where(['product_id'=> $product_id ])->all();
+//        print_r($product);exit();
+        if ($product) {
+            $productlisting= [];//created an listing array
+            foreach ($product as $pt) {
+                $product_images = []; //created an image array
+                foreach($pt->productImages as $images){
+                    $product_images[]=[
+                        'product_image_id' => $images->product_image_id,
+                        'image' => Yii::$app->urlManager->createAbsoluteUrl('' . $images['image'], 'http'),
+                    ];
+                }
+                $productlisting[] = [
+                    'product_id' => $pt->product_id,
+                    'image' => $product_images,
+                    'name' => $pt->name,
+                    'price' => $pt->price,
+                    'quantity' => $pt->quantity,
+                ];
+            }
+            return array('status' => true, 'data' => $productlisting);
+        } else {
+            return array('status' => false, 'data' => 'No Product Found');
+        }
+    }
+
+    public function actionGetCreate()
+    {
+        $request = Yii::$app->request->bodyParams;
+        $model = new Admin();
+        $model->email = $request['email'];
+        $model->password=$request['password'];
+        $model->name = $request['name'];
+        $model->gender=$request['gender'];
+//        $model->email=$params['email'];
+
+            if($model->gender == "Male") {
+                if ($model->save()) {
+                $response['isSuccess'] = 201;
+                $response['message'] = 'You are now a member!';
+//            $response['user'] = Admin::find($model->email);
+                return $response;
+            }
         }
 
+        else {
+            //$model->validate();
+            $model->getErrors();
+            $response['hasErrors'] = $model->hasErrors();
+            $response['errors'] = $model->getErrors();
+            //return = $model;
+            return "Only Male are allowed";
+
+        }
+    }
+    public function actionGetLogin(){
+        $model = new Admin();
+        $params = Yii::$app->request->post();
+        $model->email = $params['email'];
+        $model->password = $params['password'];
+        if ($model->Admin()) {
+            $response['message'] = 'You are now logged in!';
+            $response['user'] = Admin::find($model->email);
+            //return [$response,$model];
+            return $response;
+        }
+        else {
+            $model->validate();
+            $response['errors'] = $model->getErrors();
+            return $response;
+        }
     }
     public function actionGetCertifications($lang = 'en')
     {
