@@ -2,6 +2,7 @@
 use yii\bootstrap5\ActiveForm;
 use yii\helpers\Html;
 
+/** @var app\models\AngularDeveloper $model */
 
 ?><div>
     <h1>Import Data</h1>

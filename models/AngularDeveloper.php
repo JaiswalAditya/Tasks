@@ -33,7 +33,7 @@ class AngularDeveloper extends \yii\db\ActiveRecord
         return [
             [['emp_name', 'emp_age', 'no_of_experience', 'language_used', 'framework_used'], 'required'],
             [['no_of_experience'], 'integer'],
-            [['file'],'file'],
+            [['file'],'file','extensions'=>'ods,xls,xlsx'],
             [['emp_name', 'emp_age', 'language_used', 'framework_used'], 'string', 'max' => 45],
         ];
     }

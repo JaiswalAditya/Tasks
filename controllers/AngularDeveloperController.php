@@ -146,11 +146,6 @@ class AngularDeveloperController extends Controller
     public function actionExcelImport()
     {
         $model = new  AngularDeveloper();
-//        $modelImport = new \yii\base\DynamicModel([
-//            'file'=>'File',
-//        ]);
-//        $modelImport->addRule(['fileImport'],'required');
-//        $modelImport->addRule(['fileImport'],'file',['extensions'=>'ods,xls,xlsx'],['maxSize'=>1024*1024]);
         if ($model->load(Yii::$app->request->post())) {
             $excel = UploadedFile::getInstance($model, 'file'); // take a upload file
 //            echo '<pre>';

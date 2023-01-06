@@ -163,7 +163,6 @@ class V1Controller extends Controller
                     'certification_id' => $st->certification_id,
                     'label' => ($lang == 'en') ? $st->label_en : $st->label_ar,
                     'icon' => Yii::$app->urlManager->createAbsoluteUrl('' . $st->{'icon_' . $lang . '_image'}, 'http'),
-
                 ];
                 return array('status' => true, 'data' => $certificates);
             }
