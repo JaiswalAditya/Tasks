@@ -1,6 +1,7 @@
 <?php
 
 use app\models\AngularDeveloper;
+use yii\bootstrap5\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
@@ -22,7 +23,9 @@ $this->params['breadcrumbs'][] = $this->title;
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
+    <p>
+        <?= Html::a('Export Data', ['excel-import'], ['class' => 'btn btn-primary']) ?>
+    </p>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,

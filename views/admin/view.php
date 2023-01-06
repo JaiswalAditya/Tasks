@@ -24,6 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'method' => 'post',
             ],
         ]) ?>
+        <?= Html::a('Generate Inovices', ['generate-pdf','id' => $model->id], ['class' => 'btn btn-primary']) ?>
     </p>
 
     <?= DetailView::widget([
@@ -33,6 +34,17 @@ $this->params['breadcrumbs'][] = $this->title;
             'name',
             'email:email',
             'gender',
+            ['label' => 'logo',
+
+                'format' => ['image',['width'=>'100']],
+
+                'value'=>function($model){
+
+                    return('@web/uploads/'.$model->logo);
+
+                },
+
+            ],
             'is_active',
             'is_deleted',
         ],

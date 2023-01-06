@@ -4,6 +4,8 @@ namespace app\controllers;
 
 use app\models\Admin;
 use app\models\AdminSearch;
+use kartik\mpdf\Pdf;
+use \Mpdf\Mpdf;
 use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -25,6 +27,7 @@ class AdminController extends Controller
      */
     public function behaviors()
     {
+//        return [];
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -60,14 +63,6 @@ class AdminController extends Controller
 
         // build a DB query to get all articles with status = 1
         $query = Admin::find()->where(['is_active' => 1]);
-        // $json = \Yii::$app->session['_LemonPerfectUserPermissibleItem'];
-        // $perm = json_decode($j   son, true);
-
-        // echo "<pre>";
-        // print_r(\app\helpers\PermissionHelper::getUserPermissibleAction(1));
-        // // print_r($perm);
-        // exit;
-
 
         // build a DB query to get all articles with status = 1
         $query = Admin::find()->where(['id' => 1]);
@@ -124,8 +119,7 @@ class AdminController extends Controller
             $row['items'] = $this->getModuleItem($row['auth_module_id']);
             array_push($result, $row);
         }
-        //echo phpinfo();
-//echo phpinfo();
+
         if ($this->request->isPost) {
             if ($model->load($this->request->post())) {
                 //get the instance of the uploaded file.
@@ -140,12 +134,6 @@ class AdminController extends Controller
 //                print_r($width);exit
 
                 if ($width > 1000 || $height > 1000) {
-//                    $heightResize = 1000 * ($width / $height);
-////                    print_r();exit;
-//
-//                    $imageResize = Yii::$app->image->load('uploads/' . $fileName);
-//                    $imageResize->resize(1000, $heightResize);
-//                    $imageResize->save();
                     $uid = uniqid(time(), true);
                     $destNameJpg = $uid . ".jpg";
                     \app\helpers\AppHelper::resize('uploads/' . $fileName, 'uploads/' . $destNameJpg, 900, 1200, 100);
@@ -155,7 +143,7 @@ class AdminController extends Controller
 
 
                 //save the path in db column
-                $model->logo = 'uploads/' . $imageName . '.' . $model->file->extension;
+                $model->logo = $destNameJpg;
                 $request = Yii::$app->request->bodyParams;
 
                 $password = $request['Admin']['password'];
@@ -202,7 +190,53 @@ class AdminController extends Controller
      * @throws NotFoundHttpException if the model cannot be found
      */
 
- public function actionUpload() {
+    public function actionPdf() {
+        // get your HTML raw content without any layouts or scripts
+        $content = $this->renderPartial('pdf');
+        // setup kartik\mpdf\Pdf component
+        $pdf = new Pdf([
+            // set to use core fonts only
+            'mode' => Pdf::MODE_CORE,
+            // A4 paper format
+            'format' => Pdf::FORMAT_A4,
+            // portrait orientation
+            'orientation' => Pdf::ORIENT_PORTRAIT,
+            // stream to browser inline
+            'destination' => Pdf::DEST_BROWSER,
+            // your html content input
+            'content' => $content,
+            // format content from your own css file if needed or use the
+            // enhanced bootstrap css built by Krajee for mPDF formatting
+            'cssFile' => '@vendor/kartik-v/yii2-mpdf/src/assets/kv-mpdf-bootstrap.min.css',
+            // any css to be embedded if required
+            'cssInline' => '.kv-heading-1{font-size:18px}',
+            // set mPDF properties on the fly
+            'options' => ['title' => 'Inovant Solutions'],
+            // call mPDF methods on the fly
+            'methods' => [
+                'SetHeader'=>['Inovant Solutions'],
+                'SetFooter'=>['{PAGENO}'],
+            ]
+        ]);
+        // return the pdf output as per the destination setting
+        return $pdf->render('pdf');
+    }
+    public function actionGeneratePdf($id) {
+
+        $html = $this->renderPartial('pdf',
+            ['model'=> $this->findModel($id)]);
+        $model = $this->findModel($id);
+        $path = "uploads/".$model->logo;
+
+        $mpdf = new mPDF;
+        $mpdf->showImageErrors = true; // it will show image errors.
+        $mpdf->curlAllowUnsafeSslRequests = true; // it will fix ssl error
+        $mpdf->imageVars['myvariable'] = file_get_contents($path);
+        $mpdf->WriteHTML($html);
+        $mpdf->debug = true;
+        $mpdf->Output();
+    }
+    public function actionUpload() {
         $files = array();
         $allwoedFiles = ['jpg', 'png'];
         if ($_FILES) {
@@ -246,7 +280,6 @@ class AdminController extends Controller
     public function actionUpdate($id)
     {
         $imageAdmin = \app\models\Admin::findOne(['id' => $id]);
-
         $model = $this->findModel($id);
         $modules = \app\models\AuthModule::find()
         ->orderBy(['sort_order' => SORT_ASC])

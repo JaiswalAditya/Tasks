@@ -3,6 +3,7 @@
 namespace app\modules\api\controllers;
 use app\models\Admin;
 use app\models\Certifications;
+use app\models\LoginForm;
 use app\models\ProductImages;
 use app\models\Products;
 use Yii;
@@ -54,9 +55,8 @@ class V1Controller extends Controller
         Yii::$app->controller->enableCsrfValidation = false;
         return parent::beforeAction($action);
     }
+    public function actionAddProducts(){
 
-    public function actionGet(){
-        return "OK";
     }
     public function actionGetProductListing()
     {
@@ -84,34 +84,33 @@ class V1Controller extends Controller
             return array('status' => false, 'data' => 'No Product Found');
         }
     }
-    public function actionGetProductDetails($product_id){
-        $product = Products::find()->where(['product_id'=> $product_id ])->all();
+    public function actionProductDetails($product_id){
+        $product = Products::find()->where(['product_id'=> $product_id ])->one();
 //        print_r($product);exit();
         if ($product) {
-            $productlisting= [];//created an listing array
-            foreach ($product as $pt) {
-                $product_images = []; //created an image array
-                foreach($pt->productImages as $images){
+            $productdetails= [];//created an product details array
+                $product_images = []; //created an product image array
+                foreach($product->productImages as $images){
                     $product_images[]=[
                         'product_image_id' => $images->product_image_id,
                         'image' => Yii::$app->urlManager->createAbsoluteUrl('' . $images['image'], 'http'),
                     ];
                 }
-                $productlisting[] = [
-                    'product_id' => $pt->product_id,
+                $productdetails[] = [
+                    'product_id' => $product->product_id,
                     'image' => $product_images,
-                    'name' => $pt->name,
-                    'price' => $pt->price,
-                    'quantity' => $pt->quantity,
+                    'name' => $product->name,
+                    'price' => $product->price,
+                    'quantity' => $product->quantity,
                 ];
-            }
-            return array('status' => true, 'data' => $productlisting);
+
+            return array('status' => true, 'data' => $productdetails);
         } else {
             return array('status' => false, 'data' => 'No Product Found');
         }
     }
 
-    public function actionGetCreate()
+    public function actionRegister()
     {
         $request = Yii::$app->request->bodyParams;
         $model = new Admin();
@@ -119,41 +118,34 @@ class V1Controller extends Controller
         $model->password=$request['password'];
         $model->name = $request['name'];
         $model->gender=$request['gender'];
-//        $model->email=$params['email'];
-
-            if($model->gender == "Male") {
-                if ($model->save()) {
-                $response['isSuccess'] = 201;
-                $response['message'] = 'You are now a member!';
-//            $response['user'] = Admin::find($model->email);
-                return $response;
-            }
-        }
-
-        else {
-            //$model->validate();
-            $model->getErrors();
-            $response['hasErrors'] = $model->hasErrors();
-            $response['errors'] = $model->getErrors();
-            //return = $model;
-            return "Only Male are allowed";
-
-        }
-    }
-    public function actionGetLogin(){
-        $model = new Admin();
-        $params = Yii::$app->request->post();
-        $model->email = $params['email'];
-        $model->password = $params['password'];
-        if ($model->Admin()) {
-            $response['message'] = 'You are now logged in!';
-            $response['user'] = Admin::find($model->email);
-            //return [$response,$model];
+        if ($model->save()) {
+            $response['isSuccess'] = 201;
+            $response['message'] = 'You are now a member!';
             return $response;
         }
         else {
-            $model->validate();
+            $model->getErrors();
+            $response['hasErrors'] = $model->hasErrors();
             $response['errors'] = $model->getErrors();
+        }
+    }
+    public function actionLogin(){
+        $params = Yii::$app->request->post(); // request parameter
+        $model=\app\models\Admin::find()->where(['email'=>$params['email']])->one();
+        if(!empty($model)){
+            $validate = Yii::$app->security->validatePassword($params['password'], $model->password);
+            if($validate){
+                $response['isSuccess'] = 201;
+                $response['message'] = 'Login Successfully';
+                return $response;
+            }else{
+                $response['isSuccess'] = 401;
+                $response['message'] = 'Invalid Password';
+                return $response;
+            }
+        }else{
+            $response['isSuccess'] = 401;
+            $response['message'] = 'Invalid Email';
             return $response;
         }
     }
@@ -169,17 +161,10 @@ class V1Controller extends Controller
             foreach($student as $st){
                 $certificates[] = [ //push an array
                     'certification_id' => $st->certification_id,
-//                     $x = ($lang == 'en') ? (['label_en' => $st->label_en]) : (['label_ar' => $st->label_ar]);
-//                echo $x;
                     'label' => ($lang == 'en') ? $st->label_en : $st->label_ar,
                     'icon' => Yii::$app->urlManager->createAbsoluteUrl('' . $st->{'icon_' . $lang . '_image'}, 'http'),
 
-//                    'label_en' => $st->label_en,
-//                    'label_ar' => $st->label_ar,
-//                    'icon_en_image' => Yii::$app->urlManager->createAbsoluteUrl('' . $st->{'icon_' . $lang . '_image'}, 'http'),
-//                    'icon_ar_image' => Yii::$app->urlManager->createAbsoluteUrl('' . $st->{'icon_' . $lang . '_image'}, 'http'),
                 ];
-//                print_r($st);exit();
                 return array('status' => true, 'data' => $certificates);
             }
         } else {

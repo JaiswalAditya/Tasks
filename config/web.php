@@ -1,4 +1,5 @@
 <?php
+
 use yii\web\Request;
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
@@ -19,6 +20,13 @@ $config = [
             'parsers' => [
                 'application/json' => 'yii\web\JsonParser',
             ],
+//            'pdf' => [
+//                'class' => Pdf::classname(),
+//                'format' => Pdf::FORMAT_A4,
+//                'orientation' => Pdf::ORIENT_PORTRAIT,
+//                'destination' => Pdf::DEST_BROWSER,
+//                // refer settings section for all configuration options
+//            ]
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -59,6 +67,10 @@ $config = [
             ],
         ],
     ],
+//    'components' => [
+//        // setup Krajee Pdf component
+//
+//    ],
     'params' => $params,
     'modules' => [
         'api' => [

@@ -1,6 +1,7 @@
 <?php
 
 use app\models\Admin;
+use yii\bootstrap5\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
@@ -8,6 +9,7 @@ use yii\grid\GridView;
 // use kartik\grid\Gridview;
 use \yii\widgets\LinkPager;
 use kartik\export\ExportMenu;
+use yii\bootstrap\BootstrapAsset;
 
 /** @var yii\web\View $this */
 /** @var app\models\AdminSearch $searchModel */
@@ -22,8 +24,11 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create User', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Create Admin', ['create'], ['class' => 'btn btn-success']) ?>
         </p>
+<!--    <p>-->
+<!--        --><?php //= Html::a('Generate Inovices', ['pdf'], ['class' => 'btn btn-primary']) ?>
+<!--    </p>-->
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <?php  $gridColumns = [
@@ -47,7 +52,18 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             // 'password',
             'is_active',
-            'logo',
+//            'logo',
+            ['label' => 'logo',
+
+            'format' => ['image',['width'=>'100']],
+
+            'value'=>function($model){
+
+                return('@web/uploads/'.$model->logo);
+
+            },
+
+        ],
             [
                 'attribute' => 'gender',
                 'filterInputOptions' => [
@@ -55,21 +71,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     'placeholder' => 'Search for Gender...'
                  ]
             ],
-            // [
-            //     'attribute' => 'department',
-            //     'filterInputOptions' => [
-            //         'class'       => 'form-control',
-            //         'placeholder' => 'Search for department     ...'
-            //      ]
-            // ],
-            //'is_deleted',
-            // ['header' => 'Action',
-            //     'class' => ActionColumn::className(),
-            //     'urlCreator' => function ($action, Admin $model, $key, $index, $column) {
-            //         return Url::toRoute([$action, 'id' => $model->id]);
-            //         echo print_r($index);
-            //      }
-            // ],
             [
                 'header' => 'Action',
                 'class' => 'yii\grid\ActionColumn',
@@ -112,17 +113,13 @@ echo ExportMenu::widget([
     'dataProvider' => $dataProvider,
     'columns' => $gridColumns,
     'clearBuffers' => true, //optiogesnal
-]);
+]);?>
 
-// You can choose to render your own GridView separately
-echo GridView::widget([
+<?= GridView::widget([
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
     'columns' => $gridColumns
-]);?> 
-    
-    
-
+]);?>
 
 
 </div>

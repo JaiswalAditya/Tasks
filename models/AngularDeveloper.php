@@ -19,6 +19,7 @@ class AngularDeveloper extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
+    public $file;
     public static function tableName()
     {
         return 'angular_developer';
@@ -32,6 +33,7 @@ class AngularDeveloper extends \yii\db\ActiveRecord
         return [
             [['emp_name', 'emp_age', 'no_of_experience', 'language_used', 'framework_used'], 'required'],
             [['no_of_experience'], 'integer'],
+            [['file'],'file'],
             [['emp_name', 'emp_age', 'language_used', 'framework_used'], 'string', 'max' => 45],
         ];
     }

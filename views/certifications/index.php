@@ -1,6 +1,7 @@
 <?php
 
 use app\models\Certifications;
+use kartik\editable\Editable;
 use kartik\switchinput\SwitchInput;
 use yii\bootstrap5\BootstrapAsset;
 use yii\helpers\BaseUrl;
@@ -37,6 +38,14 @@ $this->registerJsFile(BaseUrl::home() . 'js/toggle.js', ['depends' => [\yii\web\
             ['class' => 'yii\grid\SerialColumn'],
 
 //            'certification_id',
+            Editable::widget([
+                'name'=>'person_name',
+                'asPopover' => true,
+                'value' => 'Kartik Visweswaran',
+                'header' => 'Name',
+                'size'=>'md',
+                'options' => ['class'=>'form-control', 'placeholder'=>'Enter person name...']
+            ]),
             'label_en',
             'label_ar',
             ['label' => 'English Image',

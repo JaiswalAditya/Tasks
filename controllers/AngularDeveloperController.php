@@ -10,7 +10,8 @@ use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use app\components\AccessRule;
 use app\components\UserIdentity;
-
+use yii\web\UploadedFile;
+use yii;
 /**
  * AngularDeveloperController implements the CRUD actions for AngularDeveloper model.
  */
@@ -140,5 +141,72 @@ class AngularDeveloperController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionExcelImport()
+    {
+        $model = new  AngularDeveloper();
+//        $modelImport = new \yii\base\DynamicModel([
+//            'file'=>'File',
+//        ]);
+//        $modelImport->addRule(['fileImport'],'required');
+//        $modelImport->addRule(['fileImport'],'file',['extensions'=>'ods,xls,xlsx'],['maxSize'=>1024*1024]);
+        if ($model->load(Yii::$app->request->post())) {
+            $excel = UploadedFile::getInstance($model, 'file'); // take a upload file
+//            echo '<pre>';
+//            print_r($excel);exit();
+            if ($excel) {
+                $model->file = 'products-import-' . time() . '.' . $excel->extension;
+//                print_r($model->file);exit();
+                $upload_path = Yii::$app->basePath . '/web/uploads/';
+//                print_r($upload_path);exit();
+                $path = $upload_path . $model->file;
+//                print_r($path);exit();
+                $excel->saveAs($path);
+                $objPHPExcel = \PhpOffice\PhpSpreadsheet\IOFactory::load($path);
+                $sheetData = $objPHPExcel->getActiveSheet()->toArray(null, true, true, true);
+//                echo '<pre>';
+//                print_r($sheetData);exit();
+                $errorCount = 0;
+                $errorArr = [];
+                $successCount = 0;
+                for ($i = 2; $i <= count($sheetData); $i++) {
+                    $emp_id= trim($sheetData[$i]['A']);
+                    $emp_name= trim($sheetData[$i]['B']);
+//                    print_r($emp_name);exit();
+                   $emp_age= trim($sheetData[$i]['C']);
+                   $no_of_experience= trim($sheetData[$i]['D']);
+                    $language_used= trim($sheetData[$i]['E']);
+                    $framework_used= trim($sheetData[$i]['F']);
+//                    if (!empty($emp_id) && !empty($emp_name)) {
+                    $productModel = new AngularDeveloper();
+                    $productModel->emp_name = $emp_name; // this will fill a data in table
+                    $productModel->emp_age = $emp_age;
+                    $productModel->no_of_experience = $no_of_experience;
+                    $productModel->language_used = $language_used;
+                    $productModel->framework_used = $framework_used;
+
+                        if ($productModel->save()) {
+                            $successCount++;
+                        } else {
+                            echo print_r($productModel->errors);
+                            exit;
+                        }
+                }
+                if ($errorCount == 0) {
+                    Yii::$app->session->setFlash('success', "{$successCount} Products created successfully.");
+                } elseif ($successCount == 0) {
+                    Yii::$app->session->setFlash('error', "Products import failed.");
+                } else {
+                    Yii::$app->session->setFlash('error', "Error occured while adding products for the following rows.<br/> <p>" . implode(', ', $errorArr) . ". <br/>Please fix the errors and try again</p>");
+                }
+                unlink($path); // remove file from uploads directory
+                return $this->refresh();
+            }
+        }
+
+        return $this->render('excel_import', [
+            'model' => $model,
+        ]);
     }
 }
